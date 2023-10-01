@@ -11,7 +11,7 @@ A minimal minecraft server management cli-app using Bash. Intended for Linux sys
 
 
 ## About
-[`talaria`](https://github.com/wasique-sh/talaria.sh/blob/master/talaria) simplifies managing one minecraft server per linux system. In addition, it does the following:
+[`talaria`](https://github.com/wasique-sh/talaria.sh/blob/main/talaria) simplifies managing one minecraft server per linux system. In addition, it does the following:
 - Start and Stop the server in a safe and reliably manner
 - Automatically restart the server whenever it crashes
 - Keeps the server running even if the terminal is closed

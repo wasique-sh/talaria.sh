@@ -1,0 +1,78 @@
+#!/bin/bash
+
+## TALARIA CONFIG ##
+_DIRECTORY="/home/USERNAME/minecraft"
+_MIN_RAM=2G
+_MAX_RAM=3G
+
+## TALARIA CODE ##
+isAlive() { /usr/bin/screen -ls | /usr/bin/grep -q "talaria"; }
+ 
+_helptext="Usage: talaria [arguments]
+
+Arguments:
+start    start server
+stop     stop server
+view     view server console
+ping     check server status
+kill     kill server
+version  print program version"
+
+if [ $# -eq 0 ]; then
+    /usr/bin/echo "Error: No argument provided
+$_helptext"
+else
+    case "$1" in
+    "start")
+        if isAlive; then
+            /usr/bin/echo "Error: Server already started"
+        else
+            /usr/bin/touch /tmp/talaria.lock
+            /usr/bin/screen -dmLS talaria bash -c "cd \"$_DIRECTORY\"; while [ -f /tmp/talaria.lock ]; do /usr/bin/java -Xmx$_MAX_RAM -Xms$_MIN_RAM -jar server.jar nogui; done"
+            /usr/bin/echo "Server started"
+        fi
+        ;;
+    "stop")
+        /usr/bin/rm -f /tmp/talaria.lock
+        if isAlive; then
+            /usr/bin/screen -S talaria -X stuff 'stop^M'
+            /usr/bin/echo "Server stopped"
+        else
+            /usr/bin/echo "Error: No server alive to stop"
+        fi
+        ;;
+    "kill")
+        /usr/bin/rm -f /tmp/talaria.lock
+        if isAlive; then
+            /usr/bin/screen -S talaria -X quit
+            /usr/bin/echo "Server killed"
+        else
+            /usr/bin/echo "Error: No server alive to kill"
+        fi
+        ;;
+    "view")
+        if isAlive; then
+            /usr/bin/screen -rx talaria
+        else
+            /usr/bin/echo "Error: No server alive to view"
+        fi
+        ;;
+    "ping")
+        if isAlive; then
+            /usr/bin/echo "Server is Alive"
+        else
+            /usr/bin/echo "Server is Dead"
+        fi
+        ;;
+    "version")
+        /usr/bin/echo "Talaria 0.1.0"
+        ;;
+    "help")
+        /usr/bin/echo "$_helptext"
+        ;;
+    *)
+        /usr/bin/echo "Error: Unsupported argument
+$_helptext"
+        ;;
+    esac
+fi
